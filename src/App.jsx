@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import GeneralInfo from "./components/generalInfo";
+import EducationalInfo from "./components/educationalInfo";
+import WorkInfo from "./components/workInfo";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+    const [currentStep, setCurrentStep] = useState(1);
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        school: "",
+        degree: "",
+        dateStart: "",
+        dateEnd: "",
+        jobTitle: "",
+        companyName: "",
+        mainResponsibilities: "",
+        workDateStart: "",
+        workDateEnd: "",
+    });
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>CV Application</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const handleChange = (event) => {
+        setFormData({
+            ...formData,
+            [event.target.name]: event.target.value,
+        });
+    };
+
+    const nextStep = () => setCurrentStep((prev) => prev + 1);
+    const prevStep = () => setCurrentStep((prev) => prev - 1);
+
+    return (
+        <>
+            {currentStep === 1 && <GeneralInfo formData={formData} handleChange={handleChange} />}
+            {currentStep === 2 && <EducationalInfo formData={formData} handleChange={handleChange} />}
+            {currentStep === 3 && <WorkInfo formData={formData} handleChange={handleChange} />}
+            {currentStep === 4 && (
+                <div>
+                    <h2>Review Your Information:</h2>
+                    <pre>{JSON.stringify(formData, null, 2)}</pre>
+                </div>
+            )}
+
+            {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
+            {currentStep < 4 ? <button onClick={nextStep}>Next</button> : <button onClick={() => alert("Submitted!")}>Submit</button>}
+        </>
+    );
 }
-
-export default App
